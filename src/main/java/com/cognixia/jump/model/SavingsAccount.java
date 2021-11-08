@@ -16,12 +16,12 @@ public class SavingsAccount extends Account{
 
 	
 	@Override
-	public void deposit(int amount) {
+	public void deposit(Double amount) {
 		this.balance += amount;
 	}
 
 	@Override
-	public void withdraw(int amount) {
+	public void withdraw(Double amount) {
 		this.balance -= amount;
 	}
 

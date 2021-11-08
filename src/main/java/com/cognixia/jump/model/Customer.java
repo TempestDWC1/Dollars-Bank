@@ -1,6 +1,6 @@
 package com.cognixia.jump.model;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Customer {
 
@@ -11,7 +11,7 @@ public class Customer {
 	// this allows for any object that is/extends Account
 	// so both my savings and checking accounts can implement Account
 	// and be put into the list of customer accounts
-	List<Account> accounts;
+	ArrayList<Account> accounts = new ArrayList<>();
 	
 	private static Integer idCounter = 0;
 	
@@ -56,8 +56,17 @@ public class Customer {
 		this.password = password;
 	}
 
-	public List<Account> getAccounts() {
+	public ArrayList<Account> getAccounts() {
 		return accounts;
+	}
+	
+	public Account getAccountById(Integer id) {
+		for(Account a: accounts) {
+			if(a.getId() == id) {
+				return a;
+			}
+		}
+		return null;
 	}
 	
 	public void addAccount(Account account) {

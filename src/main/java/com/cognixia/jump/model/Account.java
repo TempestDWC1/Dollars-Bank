@@ -13,8 +13,8 @@ public abstract class Account {
 		return idCounter++;
 	}
 
-	public abstract void deposit(int amount);
+	public abstract void deposit(Double amount);
 	
-	public abstract void withdraw(int amount);
+	public abstract void withdraw(Double amount);
 	
 }
