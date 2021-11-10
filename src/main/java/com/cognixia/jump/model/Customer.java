@@ -15,7 +15,7 @@ public class Customer {
 	
 	private static Integer idCounter = 0;
 	
-	public Customer(String name, String username, String password, Double balance) {
+	public Customer(String name, String username, String password, Float balance) {
 		super();
 		this.id = idCounter++;
 		this.name = name;
