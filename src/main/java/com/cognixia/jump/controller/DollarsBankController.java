@@ -65,7 +65,7 @@ public class DollarsBankController {
 					cp.print("Initial Deposit Amount");
 					Float initialBalance = input.nextFloat();
 					Customer newCustomer = new Customer(name, username, password, initialBalance);
-					cp.print(customers);
+					cp.print(newCustomer);
 					transactions.add("Initial Deposit: " + initialBalance + " Date: " + new Date());
 					customersTransactions.put(newCustomer, transactions);
 					transactions.clear();
@@ -157,18 +157,20 @@ public class DollarsBankController {
 									if( c.getUsername().equals(transferTarget) ) {
 										c.getAccount().deposit(amount);
 										customer.getAccount().withdraw(amount);
-										customersTransactions.get(customer).add("Transfer amount: " + amount + " Transfer Receiver: " + c.getUsername() +" Date: " + new Date());
+										// transaction log for both the sender and receiver
+										customersTransactions.get(customer).add("Transfer amount: " + amount + " Transfer Receiver: " + c.getUsername() + " Date: " + new Date());
+
+										customersTransactions.get(c).add("Transfer amount: " + amount + " Transfer Sender: " + customer.getUsername() + " Date: " + new Date());
 										break;
 									}
 								}
-								cp.print("Unable to find account holder, cancelling transfer");
 							}else {
 								cp.print("Transaction cancelled: Improper funds");
 							}
 							
 						}
 					}catch(Exception e) {
-						
+						cp.print("Unable to find account holder, cancelling transfer");
 					}
 					break;
 					
