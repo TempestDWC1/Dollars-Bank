@@ -3,11 +3,10 @@ package com.cognixia.jump.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
-
-import com.cognixia.jump.model.Account;
 import com.cognixia.jump.model.Customer;
 import com.cognixia.jump.model.SavingsAccount;
 import com.cognixia.jump.utility.ConsolePrinter;
+import com.cognixia.jump.utility.DataGenerator;
 
 public class DollarsBankController {
 	
@@ -24,6 +23,9 @@ public class DollarsBankController {
 		
 		boolean keepGoing = true;
 		boolean user = false;
+		
+		// set up testingdata
+		customers = DataGenerator.testingDataList();
 		
 		while(keepGoing) {//------------------------------------------------------------------
 			if(!user) {
@@ -49,6 +51,7 @@ public class DollarsBankController {
 					cp.print("Initial Deposit Amount");
 					Float initialBalance = input.nextFloat();
 					customers.add(new Customer(name, username, password, initialBalance));
+					transactions.add("Initial Deposit: " + initialBalance + " Date: " + new Date());
 					break;
 					
 				case "2":
@@ -64,6 +67,7 @@ public class DollarsBankController {
 							
 							customer = c;
 							user = true;
+							break;
 						}else {
 							cp.print("Invalid Credentials. Try Again!");
 						}
@@ -99,12 +103,10 @@ public class DollarsBankController {
 				switch(choice) {
 				case "1":
 					cp.print("\n--------- Deposit Amount ---------");
-					cp.print("Which Account are you depositing into: ");
-					Integer id = input.nextInt();
 					cp.print("How much would you like to deposit: ");
 					Float amount = input.nextFloat();
-					if(customer.getAccountById(id) != null) {
-						SavingsAccount account = (SavingsAccount)customer.getAccountById(id);
+					if(customer.getAccount() != null) {
+						SavingsAccount account = customer.getAccount();
 						account.deposit(amount);
 						transactions.add("Deposit: " + amount + " Date: " + new Date());
 					}
@@ -112,12 +114,10 @@ public class DollarsBankController {
 					
 				case "2":
 					cp.print("\n-------- Withdraw Amount ---------");
-					cp.print("Which Account are you depositing into: ");
-					id = input.nextInt();
 					cp.print("How much would you like to withdraw: ");
 					amount = input.nextFloat();
-					if(customer.getAccountById(id) != null) {
-						SavingsAccount account = (SavingsAccount)customer.getAccountById(id);
+					if(customer.getAccount() != null) {
+						SavingsAccount account = customer.getAccount();
 						if(account.getBalance() - amount > 0) {
 							account.withdraw(amount);
 							transactions.add("Withdraw: " + amount + " Date: " + new Date());
@@ -128,6 +128,32 @@ public class DollarsBankController {
 					break;
 					
 				case "3":
+					cp.print("\n-------- Transfer Funds --------");
+					try {
+						cp.print("What is the username of the account you wish to transfer funds too?");
+						String transferTarget = input.next();
+						cp.print("How much are you transfering?");
+						amount = input.nextFloat();
+						if(customer.getAccount() != null) {
+							SavingsAccount account = customer.getAccount();
+							if(account.getBalance() - amount > 0) {
+								for(Customer c: customers) {
+									if( c.getUsername().equals(transferTarget) ) {
+										c.getAccount().deposit(amount);
+										customer.getAccount().withdraw(amount);
+										transactions.add("Transfer amount: " + amount + " Transfer Receiver: " + c.getUsername() +" Date: " + new Date());
+										break;
+									}
+								}
+								cp.print("Unable to find account holder, cancelling transfer");
+							}else {
+								cp.print("Transaction cancelled: Improper funds");
+							}
+							
+						}
+					}catch(Exception e) {
+						
+					}
 					break;
 					
 				case "4":
@@ -142,12 +168,9 @@ public class DollarsBankController {
 					cp.print("Name: \t\t" + customer.getName());
 					cp.print("Username: \t" + customer.getUsername());
 					cp.print("Password: \t" + customer.getPassword());
-					for(Account a: customer.getAccounts()) {
-						SavingsAccount sa = (SavingsAccount)a;
-						cp.print("Account ID: \t" + sa.getId());
-						cp.print("Type: \t\t" + sa.type());
-						cp.print("Balance: \t" + sa.getBalance());
-					}
+					cp.print("Account ID: \t" + customer.getAccount().getId());
+					cp.print("Type: \t\t" + customer.getAccount().type());
+					cp.print("Balance: \t" + customer.getAccount().getBalance());
 					break;
 					
 				case "6":

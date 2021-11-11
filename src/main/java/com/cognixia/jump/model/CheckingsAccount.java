@@ -4,11 +4,11 @@ public class CheckingsAccount extends Account{
 	
 	private Integer id;
 	private String type = "Checking";
-	private Double balance;
+	private Float balance;
 	private Customer customer;
 	
 	
-	public CheckingsAccount(Double balance, Customer customer) {
+	public CheckingsAccount(Float balance, Customer customer) {
 		super();
 		this.id = super.getId();
 		this.balance = balance;
@@ -17,12 +17,12 @@ public class CheckingsAccount extends Account{
 
 	
 	@Override
-	public void deposit(Double amount) {
+	public void deposit(Float amount) {
 		this.balance += amount;
 	}
 
 	@Override
-	public void withdraw(Double amount) {
+	public void withdraw(Float amount) {
 		this.balance -= amount;
 	}
 
@@ -35,7 +35,7 @@ public class CheckingsAccount extends Account{
 		this.id = id;
 	}
 
-	public Double getBalance() {
+	public Float getBalance() {
 		return balance;
 	}
 	

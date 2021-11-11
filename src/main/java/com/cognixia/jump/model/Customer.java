@@ -1,7 +1,5 @@
 package com.cognixia.jump.model;
 
-import java.util.ArrayList;
-
 public class Customer {
 
 	private Integer id;
@@ -11,7 +9,7 @@ public class Customer {
 	// this allows for any object that is/extends Account
 	// so both my savings and checking accounts can implement Account
 	// and be put into the list of customer accounts
-	ArrayList<Account> accounts = new ArrayList<>();
+	SavingsAccount account;
 	
 	private static Integer idCounter = 0;
 	
@@ -21,7 +19,7 @@ public class Customer {
 		this.name = name;
 		this.username = username;
 		this.password = password;
-		this.accounts.add(new SavingsAccount(balance, this));
+		this.account = new SavingsAccount(balance, this);
 	}
 
 	public Integer getId() {
@@ -56,21 +54,8 @@ public class Customer {
 		this.password = password;
 	}
 
-	public ArrayList<Account> getAccounts() {
-		return accounts;
-	}
-	
-	public Account getAccountById(Integer id) {
-		for(Account a: accounts) {
-			if(a.getId() == id) {
-				return a;
-			}
-		}
-		return null;
-	}
-	
-	public void addAccount(Account account) {
-		this.accounts.add(account);
+	public SavingsAccount getAccount() {
+		return account;
 	}
 	
 	
