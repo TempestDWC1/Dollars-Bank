@@ -8,6 +8,7 @@ import com.cognixia.jump.model.Customer;
 import com.cognixia.jump.model.SavingsAccount;
 import com.cognixia.jump.utility.ConsolePrinter;
 import com.cognixia.jump.utility.DataGenerator;
+import com.cognixia.jump.utility.PasswordChecker;
 
 public class DollarsBankController {
 	
@@ -56,10 +57,15 @@ public class DollarsBankController {
 					String username = input.nextLine();
 					cp.print("Password : 8 Characters with Lower, Upper & Special");
 					String password = input.nextLine();
+					// check the password and break it doesn't meet requirements
+					if(!PasswordChecker.check(password)) { 
+						cp.print("Password does not follow proper guidlines please try again");
+						break;
+					}
 					cp.print("Initial Deposit Amount");
 					Float initialBalance = input.nextFloat();
 					Customer newCustomer = new Customer(name, username, password, initialBalance);
-					customers.add(newCustomer);
+					cp.print(customers);
 					transactions.add("Initial Deposit: " + initialBalance + " Date: " + new Date());
 					customersTransactions.put(newCustomer, transactions);
 					transactions.clear();
@@ -79,11 +85,9 @@ public class DollarsBankController {
 							customer = c;
 							user = true;
 							break;
-						}else {
-							cp.print("Invalid Credentials. Try Again!");
-							break;
 						}
 					}
+					if(!user) cp.print("Invalid Credentials. Try Again!");
 					break;
 					
 				case "3":
