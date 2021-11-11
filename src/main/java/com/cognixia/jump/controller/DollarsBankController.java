@@ -2,6 +2,7 @@ package com.cognixia.jump.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 import com.cognixia.jump.model.Customer;
 import com.cognixia.jump.model.SavingsAccount;
@@ -20,12 +21,19 @@ public class DollarsBankController {
 		Customer customer = null;
 		// list of transactions
 		ArrayList<String> transactions = new ArrayList<>();
+		HashMap<Customer, ArrayList<String>> customersTransactions = new HashMap<>();
 		
 		boolean keepGoing = true;
 		boolean user = false;
 		
 		// set up testingdata
 		customers = DataGenerator.testingDataList();
+		for(Customer c: customers) {
+			transactions.add("Initial Deposit: " + c.getAccount().getBalance() + " Date: " + new Date());
+			customersTransactions.put(c, transactions);
+			transactions.clear();
+		}
+		
 		
 		while(keepGoing) {//------------------------------------------------------------------
 			if(!user) {
@@ -50,8 +58,11 @@ public class DollarsBankController {
 					String password = input.nextLine();
 					cp.print("Initial Deposit Amount");
 					Float initialBalance = input.nextFloat();
-					customers.add(new Customer(name, username, password, initialBalance));
+					Customer newCustomer = new Customer(name, username, password, initialBalance);
+					customers.add(newCustomer);
 					transactions.add("Initial Deposit: " + initialBalance + " Date: " + new Date());
+					customersTransactions.put(newCustomer, transactions);
+					transactions.clear();
 					break;
 					
 				case "2":
@@ -70,6 +81,7 @@ public class DollarsBankController {
 							break;
 						}else {
 							cp.print("Invalid Credentials. Try Again!");
+							break;
 						}
 					}
 					break;
@@ -95,9 +107,9 @@ public class DollarsBankController {
 				cp.print("\nEnter Choice (1,2,3,4,5, or 6)");
 				String choice = input.nextLine();
 				
-				// check the total transactions do not extend 5
-				if(transactions.size() > 5) {
-					transactions.remove(0);
+				// check that current customer transactions do not extend 5
+				if(customersTransactions.get(customer).size() > 5) {
+					customersTransactions.get(customer).remove(0);
 				}
 				
 				switch(choice) {
@@ -108,7 +120,7 @@ public class DollarsBankController {
 					if(customer.getAccount() != null) {
 						SavingsAccount account = customer.getAccount();
 						account.deposit(amount);
-						transactions.add("Deposit: " + amount + " Date: " + new Date());
+						customersTransactions.get(customer).add("Deposit: " + amount + " Date: " + new Date());
 					}
 					break;
 					
@@ -120,7 +132,7 @@ public class DollarsBankController {
 						SavingsAccount account = customer.getAccount();
 						if(account.getBalance() - amount > 0) {
 							account.withdraw(amount);
-							transactions.add("Withdraw: " + amount + " Date: " + new Date());
+							customersTransactions.get(customer).add("Withdraw: " + amount + " Date: " + new Date());
 						}else {
 							cp.print("Transaction cancelled: Improper funds");
 						}
@@ -141,7 +153,7 @@ public class DollarsBankController {
 									if( c.getUsername().equals(transferTarget) ) {
 										c.getAccount().deposit(amount);
 										customer.getAccount().withdraw(amount);
-										transactions.add("Transfer amount: " + amount + " Transfer Receiver: " + c.getUsername() +" Date: " + new Date());
+										customersTransactions.get(customer).add("Transfer amount: " + amount + " Transfer Receiver: " + c.getUsername() +" Date: " + new Date());
 										break;
 									}
 								}
@@ -158,9 +170,10 @@ public class DollarsBankController {
 					
 				case "4":
 					cp.print("\n--------- 5 Recent Transactions --------");
-					for(String transaction: transactions) {
-						cp.print(transaction);
+					for(String as: customersTransactions.get(customer)) {
+						cp.print(as);
 					}
+
 					break;
 					
 				case "5":
